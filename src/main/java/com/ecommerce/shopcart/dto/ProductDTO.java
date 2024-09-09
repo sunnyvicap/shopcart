@@ -3,7 +3,9 @@ package com.ecommerce.shopcart.dto;
 import com.ecommerce.shopcart.model.Category;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProductDTO {
 
-    private int id;
+    private Long id;
 
     @NotBlank(message = "Product name must not be blank.")
     private String productName;
@@ -20,15 +22,14 @@ public class ProductDTO {
 
     private String image;
 
+    @Min(value = 1, message = "Quantity must be greater than 1.")
     private Integer quantity;
 
+    @Min(value = 1L, message = "Price must be greater than 1.")
     private double price;
 
     private double specialPrice;
 
     private double discount;
-
-    private int categoryId;
-
 
 }

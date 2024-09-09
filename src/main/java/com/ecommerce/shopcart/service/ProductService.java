@@ -7,6 +7,7 @@ import com.ecommerce.shopcart.model.Category;
 import com.ecommerce.shopcart.model.Product;
 import com.ecommerce.shopcart.repository.CategoryRepository;
 import com.ecommerce.shopcart.repository.ProductRepository;
+import com.ecommerce.shopcart.util.Utility;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,9 +35,7 @@ public class ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found", ":" + categoryId, ""));
 
         Product product = mapper.map(productDTO, Product.class);
-
-        double specialPrice = (product.getPrice() * product.getDiscount()) / 100;
-        specialPrice = product.getPrice() - specialPrice;
+        double specialPrice = Utility.calculateDiscountPrice(product.getPrice(), product.getDiscount());
         product.setSpecialPrice(specialPrice);
 
         product.setCategory(category);
@@ -78,13 +77,22 @@ public class ProductService {
 
     public ProductDTO updateProductById(ProductDTO productDTO, Long productId) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Product nor found", "productId:" + productId));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found", "productId:" + productId));
 
-         product = mapper.map(productDTO, Product.class);
+        if (productDTO.getProductName() != null) {
+            product.setProductName(product.getProductName());
+        }
 
-        double specialPrice = (product.getPrice() * product.getDiscount()) / 100;
-        specialPrice = product.getPrice() - specialPrice;
-        product.setSpecialPrice(specialPrice);
+        if (productDTO.getPrice() >= 1.0 || productDTO.getDiscount() >= 1.0) {
+            product.setPrice(productDTO.getPrice());
+            product.setDiscount(productDTO.getDiscount());
+            double specialPrice = Utility.calculateDiscountPrice(product.getPrice(), product.getDiscount());
+            product.setSpecialPrice(specialPrice);
+        }
+
+        product.setDescription(productDTO.getDescription());
+        product.setImage(productDTO.getImage());
+        product.setQuantity(productDTO.getQuantity());
 
         return mapper.map(productRepository.save(product), ProductDTO.class);
     }
