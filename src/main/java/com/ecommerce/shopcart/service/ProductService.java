@@ -96,4 +96,11 @@ public class ProductService {
 
         return mapper.map(productRepository.save(product), ProductDTO.class);
     }
+
+    public void deleteProduct(Long productId){
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found", "productId:" + productId));
+
+        productRepository.delete(product);
+    }
 }

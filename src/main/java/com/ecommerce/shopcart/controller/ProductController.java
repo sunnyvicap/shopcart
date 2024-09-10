@@ -52,4 +52,10 @@ public class ProductController {
                                                     @PathVariable Long productId) {
         return ResponseEntity.status(HttpStatus.OK).body(productService.updateProductById(productDTO, productId));
     }
+
+    @DeleteMapping("admin/product/{productId}")
+    public ResponseEntity<String> deleteProduct(@PathVariable Long productId){
+        productService.deleteProduct(productId);
+        return ResponseEntity.status(HttpStatus.OK).body("Product deleted successfully productId {} : " + productId);
+    }
 }

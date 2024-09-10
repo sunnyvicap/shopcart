@@ -1,11 +1,7 @@
 package com.ecommerce.shopcart.dto;
 
-import com.ecommerce.shopcart.model.Category;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -31,5 +27,6 @@ public class ProductDTO {
     private double specialPrice;
 
     private double discount;
+
 
 }
