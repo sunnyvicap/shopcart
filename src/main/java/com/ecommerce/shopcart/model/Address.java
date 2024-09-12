@@ -1,5 +1,6 @@
 package com.ecommerce.shopcart.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Set;
@@ -22,6 +23,7 @@ public class Address {
     private String pinCode;
 
     @ManyToMany(mappedBy = "addresses")
+    @JsonIgnore
     private Set<User> users;
 
 }

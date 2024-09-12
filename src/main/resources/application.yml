@@ -21,8 +21,10 @@ spring:
 #application
 application:
   name: shopcart
-#  jwt-secret : jrmfoomahpwqtytakifrhtfqgitcirek
-#  jwt-expiration : 86400000 #token expiry time is 24 hrs.
+
+app:
+  jwtSecret: lu9r2Zj5zYhyXpefdQa9V6vcDzrP+pStjraLHnz2sVFgqrWY97p5v24aLg76f7pF
+  jwtExpiration: 86400000 #token expiry time is 24 hrs.
 
 #Server
 server:

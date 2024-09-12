@@ -1,5 +1,6 @@
 package com.ecommerce.shopcart.security;
 
+import com.ecommerce.shopcart.model.Role;
 import com.ecommerce.shopcart.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,8 @@ public class UserDetailsImpl implements UserDetails {
     @JsonIgnore
     private String password;
 
+    private List<Role> roles;
+
     private Collection<? extends GrantedAuthority> authorities;
 
     public static UserDetailsImpl build(User user) {
@@ -41,6 +44,7 @@ public class UserDetailsImpl implements UserDetails {
                 user.getUserName(),
                 user.getEmail(),
                 user.getPassword(),
+                user.getRoles(),
                 authorities);
     }
 

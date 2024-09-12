@@ -3,6 +3,7 @@ package com.ecommerce.shopcart.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -30,7 +31,7 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private Set<Role> roles;
+    private List<Role> roles;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinTable(
@@ -38,12 +39,12 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "address_id")
     )
-    private Set<Address> addresses;
+    private List<Address> addresses;
 
     @OneToMany(
             mappedBy = "user",
             cascade = {CascadeType.PERSIST , CascadeType.MERGE},
     orphanRemoval = true)
-    private Set<Product> products;
+    private List<Product> products;
 
 }
