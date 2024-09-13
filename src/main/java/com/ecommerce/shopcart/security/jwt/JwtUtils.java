@@ -47,6 +47,13 @@ public class JwtUtils {
                 .maxAge(jwtExpiration).build();
     }
 
+    public ResponseCookie cleanCookie(){
+       return ResponseCookie.from(jwtCookie, "")
+               .path("/api")
+               .build();
+
+    }
+
     public String generateTokenFromUsername(String userName) {
         return Jwts.builder()
                 .subject(userName)

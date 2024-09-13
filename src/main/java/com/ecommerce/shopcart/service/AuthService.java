@@ -35,6 +35,7 @@ public class AuthService {
 
     @Autowired
     private JwtUtils jwtUtils;
+
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -50,7 +51,7 @@ public class AuthService {
     @Autowired
     private ModelMapper mapper;
 
-    public ResponseEntity<UserDTO>  signInUser(SignInDTO signIn) {
+    public ResponseEntity<UserDTO> signInUser(SignInDTO signIn) {
         Authentication authentication = null;
         try {
             authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signIn.getEmail(), signIn.getPassword()));
@@ -62,20 +63,20 @@ public class AuthService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
-        UserDTO userDTO = mapper.map(userDetails , UserDTO.class);
+        UserDTO userDTO = mapper.map(userDetails, UserDTO.class);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .header(HttpHeaders.SET_COOKIE , jwtCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
                 .body(userDTO);
     }
 
     public UserDTO signUpUser(SignUpDTO signUp) {
-        if(userRepository.existsByUserName(signUp.getEmail())){
-            throw new BadRequestException("Username is already exists.", "" , signUp.getEmail() );
+        if (userRepository.existsByUserName(signUp.getEmail())) {
+            throw new BadRequestException("Username is already exists.", "", signUp.getEmail());
         }
 
-        if(userRepository.existsByEmail(signUp.getEmail())){
-            throw new BadRequestException("Email is already exists.", "" , signUp.getEmail() );
+        if (userRepository.existsByEmail(signUp.getEmail())) {
+            throw new BadRequestException("Email is already exists.", "", signUp.getEmail());
         }
         // Create new user's account
         User user = new User();
@@ -85,11 +86,23 @@ public class AuthService {
 
         Iterable<Long> roleIds = signUp.getRoles();
         List<Role> roleList = roleRepository.findAllById(roleIds);
-        if(roleList.isEmpty()){
-            throw new ResourceNotFoundException("Roles not found" , "ids are invalid");
+        if (roleList.isEmpty()) {
+            throw new ResourceNotFoundException("Roles not found", "ids are invalid");
         }
         user.setRoles(roleList);
         user = userRepository.save(user);
-        return  mapper.map(user , UserDTO.class);
+        return mapper.map(user, UserDTO.class);
+    }
+
+    public UserDTO getUserDetails(Authentication authentication) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        return mapper.map(userDetails, UserDTO.class);
+    }
+
+    public ResponseEntity<String> signOutUser() {
+        ResponseCookie cookie = jwtUtils.cleanCookie();
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body("User signed out successfully.");
     }
 }
