@@ -3,6 +3,7 @@ package com.ecommerce.shopcart.controller;
 import com.ecommerce.shopcart.dto.SignInDTO;
 import com.ecommerce.shopcart.dto.SignUpDTO;
 import com.ecommerce.shopcart.dto.UserDTO;
+import com.ecommerce.shopcart.security.jwt.JwtUtils;
 import com.ecommerce.shopcart.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,8 @@ public class AuthController {
 
     @PostMapping("/auth/sign-in")
     public ResponseEntity<UserDTO> signInUser(@Valid @RequestBody SignInDTO signIn) {
-        return ResponseEntity.status(HttpStatus.OK).body(authService.signInUser(signIn));
+
+        return authService.signInUser(signIn);
     }
 
     @PostMapping("/auth/sign-up")

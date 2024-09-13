@@ -15,20 +15,19 @@ import com.ecommerce.shopcart.security.jwt.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -36,7 +35,6 @@ public class AuthService {
 
     @Autowired
     private JwtUtils jwtUtils;
-
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -52,7 +50,7 @@ public class AuthService {
     @Autowired
     private ModelMapper mapper;
 
-    public UserDTO signInUser(SignInDTO signIn) {
+    public ResponseEntity<UserDTO>  signInUser(SignInDTO signIn) {
         Authentication authentication = null;
         try {
             authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signIn.getEmail(), signIn.getPassword()));
@@ -63,11 +61,12 @@ public class AuthService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        String jwtToken = jwtUtils.generateTokenFromUsername(userDetails);
-
+        ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
         UserDTO userDTO = mapper.map(userDetails , UserDTO.class);
-        userDTO.setToken(jwtToken);
-        return userDTO;
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(HttpHeaders.SET_COOKIE , jwtCookie.toString())
+                .body(userDTO);
     }
 
     public UserDTO signUpUser(SignUpDTO signUp) {

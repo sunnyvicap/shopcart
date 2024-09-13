@@ -23,7 +23,8 @@ application:
   name: shopcart
 
 app:
-  jwtSecret: lu9r2Zj5zYhyXpefdQa9V6vcDzrP+pStjraLHnz2sVFgqrWY97p5v24aLg76f7pF
+  jwtSecret: ${jwt_secret_key}
+  jwtCookie: ${jwt_cookie_name}
   jwtExpiration: 86400000 #token expiry time is 24 hrs.
 
 #Server
