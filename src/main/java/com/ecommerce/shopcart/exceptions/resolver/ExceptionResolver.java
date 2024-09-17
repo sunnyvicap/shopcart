@@ -19,7 +19,6 @@ import java.sql.Timestamp;
 
 @RestControllerAdvice
 public class ExceptionResolver {
-    private final Logger LOGGER = LoggerFactory.getLogger(ExceptionResolver.class);
 
     @Value("${application.name}")
     private String serviceName;

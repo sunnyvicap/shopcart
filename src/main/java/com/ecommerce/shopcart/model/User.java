@@ -9,15 +9,14 @@ import java.util.Set;
 @Entity
 @Data
 @Table(name = "shop_user",
-  uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"user_name" , "email"})
-  })
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"user_name", "email"})
+        })
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
-
+    private Long id;
 
     private String userName;
 
@@ -25,7 +24,8 @@ public class User {
 
     private String password;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -33,7 +33,8 @@ public class User {
     )
     private List<Role> roles;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_address",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -43,8 +44,13 @@ public class User {
 
     @OneToMany(
             mappedBy = "user",
-            cascade = {CascadeType.PERSIST , CascadeType.MERGE},
-    orphanRemoval = true)
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            orphanRemoval = true)
     private List<Product> products;
+
+    @OneToOne(mappedBy = "user",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            orphanRemoval = true)
+    private Cart cart;
 
 }

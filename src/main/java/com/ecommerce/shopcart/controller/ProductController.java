@@ -18,9 +18,9 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @PostMapping("admin/categories/{categoryId}/product")
+    @PostMapping("admin/categories/{category-id}/product")
     public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO,
-                                                    @PathVariable Long categoryId) {
+                                                    @PathVariable() Long categoryId) {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.createProduct(productDTO, categoryId));
 
@@ -33,9 +33,17 @@ public class ProductController {
 
     }
 
-    @GetMapping("public/categories/{categoryId}/product")
+    @GetMapping("public/product/{product-id}")
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable (name = "product-id") Long productId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(productService.getProductById(productId));
+
+    }
+
+
+    @GetMapping("public/categories/{category-id}/product")
     public ResponseEntity<Page<ProductDTO>> getProductByCategory(@PageableDefault Pageable pageable,
-                                                                 @PathVariable Long categoryId) {
+                                                                 @PathVariable(name = "category-id") Long categoryId) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(productService.getProductByCategory(pageable, categoryId));
 
@@ -47,14 +55,14 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.FOUND).body(productService.findProductBySearch(pageable, keyword));
     }
 
-    @PutMapping("admin/product/{productId}")
+    @PutMapping("admin/product/{product-id}")
     public ResponseEntity<ProductDTO> updateProduct(@Valid @RequestBody ProductDTO productDTO,
-                                                    @PathVariable Long productId) {
+                                                    @PathVariable(name = "product-id") Long productId) {
         return ResponseEntity.status(HttpStatus.OK).body(productService.updateProductById(productDTO, productId));
     }
 
-    @DeleteMapping("admin/product/{productId}")
-    public ResponseEntity<String> deleteProduct(@PathVariable Long productId){
+    @DeleteMapping("admin/product/{product-id}")
+    public ResponseEntity<String> deleteProduct(@PathVariable(name = "product-id") Long productId){
         productService.deleteProduct(productId);
         return ResponseEntity.status(HttpStatus.OK).body("Product deleted successfully productId {} : " + productId);
     }

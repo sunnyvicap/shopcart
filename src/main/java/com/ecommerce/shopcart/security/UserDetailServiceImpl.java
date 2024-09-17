@@ -4,6 +4,8 @@ import com.ecommerce.shopcart.model.User;
 import com.ecommerce.shopcart.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,5 +23,12 @@ public class UserDetailServiceImpl implements UserDetailsService {
         User user = userRepository.findByUserName(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User with username not found :" + username));
         return UserDetailsImpl.build(user);
+    }
+
+    public User getLoggedInUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        return userRepository.findByUserName(authentication.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("User with username not found :"));
     }
 }
